@@ -63,7 +63,6 @@ def showResult(n,result, dims, k=2):
     	font = pygame.font.Font(None, 36)
     	ts = 'Rule ' + str(n)
     	text = font.render(ts, 1, (255, 255, 10))
-    	text
     	textpos = text.get_rect()
     	textpos.centerx = screen.get_rect().centerx
     	screen.blit(text, textpos)
