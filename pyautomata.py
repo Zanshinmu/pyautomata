@@ -64,7 +64,7 @@ def showResult(n,result, dims, k=2):
     	ts = 'Rule ' + str(n)
     	text = font.render(ts, 1, (255, 255, 10))
     	textpos = text.get_rect()
-    	textpos.centerx = screen.get_rect().centerx
+    	textpos.centerx = screen.get_rect().centery
     	screen.blit(text, textpos)
     pygame.display.flip()
 
@@ -89,7 +89,7 @@ class MyFrame(wx.Frame):
    def __init__(self,parent,id):
       wx.Frame.__init__(self,parent,wx.ID_ANY,size = (350, 100),title="Cellular Automata Controls")
       self.label1 = wx.StaticText(self,-1,"Rule",(1, 20))
-      self.slider1 = wx.Slider(self, -1, 30, 1, 256, (50, 10), (300, 50),wx.SL_HORIZONTAL | wx.SL_AUTOTICKS | wx.SL_LABELS)
+      self.slider1 = wx.Slider(self, -1, 30, 0, 255, (50, 10), (300, 50),wx.SL_HORIZONTAL | wx.SL_AUTOTICKS | wx.SL_LABELS)
       self.label1 = wx.StaticText(self,-1,"Lines",(1, 70))
       self.slider2 = wx.Slider(self, -1, 50, 300, 800, (50, 50), (300, 50),wx.SL_HORIZONTAL | wx.SL_AUTOTICKS | wx.SL_LABELS)
       self.Bind(wx.EVT_SLIDER, self.sliderUpdate)
