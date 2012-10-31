@@ -14,14 +14,15 @@ import wx
 condition = threading.Condition()
 
 class Worker(Thread):
-   def __init__ (self, rule, lines, step):
+   def __init__ (self, rule, lines, step, seed):
       Thread.__init__(self)
       self.rule = rule
       self.lines = lines
       self.step = step
+      self.seed = seed
    def run(self):
         condition.acquire()
-        result, dims = line( self.rule,  self.lines, self.step)
+        result, dims = line( self.rule,  self.lines, self.step, self.seed)
         showResult( self.rule ,result, dims)
         condition.notify()
         condition.release()
@@ -36,7 +37,7 @@ def step(a, rule, k=2, r=1):
         l.append(result)
     return [((rule / (k ** v)) % k) for v in l]
 
-def line(rule, steps, stepper, seed=[1], k=2, r=1):
+def line(rule, steps, stepper, seed, k=2, r=1):
     seed = ([0] * steps) + seed + ([0] * steps)
     result = seed[:]
     for i in range(steps):
@@ -68,8 +69,8 @@ def showResult(n,result, dims, k=2):
     	screen.blit(text, textpos)
     pygame.display.flip()
 
-def runAutomata(n,lines):
-    worker = Worker(n,lines,step)
+def runAutomata(n,lines, seed):
+    worker = Worker(n,lines,step,seed)
     worker.setDaemon(True)
     condition.acquire()
     worker.start()
@@ -87,16 +88,18 @@ def initScreen(x,y):
 
 class MyFrame(wx.Frame):
    def __init__(self,parent,id):
-      wx.Frame.__init__(self,parent,wx.ID_ANY,size = (350, 100),title="Cellular Automata Controls")
+      wx.Frame.__init__(self,parent,wx.ID_ANY,size = (350, 150),title="Controls")
       self.label1 = wx.StaticText(self,-1,"Rule",(1, 20))
       self.slider1 = wx.Slider(self, -1, 30, 0, 255, (50, 10), (300, 50),wx.SL_HORIZONTAL | wx.SL_AUTOTICKS | wx.SL_LABELS)
-      self.label1 = wx.StaticText(self,-1,"Lines",(1, 70))
+      self.label2 = wx.StaticText(self,-1,"Lines",(1, 70))
       self.slider2 = wx.Slider(self, -1, 50, 300, 800, (50, 50), (300, 50),wx.SL_HORIZONTAL | wx.SL_AUTOTICKS | wx.SL_LABELS)
+      self.label3 = wx.StaticText(self,-1,"Seed",(1, 120))
+      self.slider3 = wx.Slider(self, -1, 1, 0, 16, (50, 90), (300, 50),wx.SL_HORIZONTAL | wx.SL_AUTOTICKS | wx.SL_LABELS)
       self.Bind(wx.EVT_SLIDER, self.sliderUpdate)
       self.sliderUpdate(self)
       
    def sliderUpdate(self, event):
-       runAutomata(self.slider1.GetValue(),self.slider2.GetValue())
+       runAutomata(self.slider1.GetValue(),self.slider2.GetValue(), [int(x) for x in str(self.slider3.GetValue()).zfill(1)])
    
         
 if ( __name__ == "__main__"):
