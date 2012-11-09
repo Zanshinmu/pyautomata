@@ -51,15 +51,13 @@ def pil_to_pygame_img(pil_img):
 
 def showResult(n,result, dims, k=2):
     i = Image.new("RGB", dims)
-    i.putdata(result, int(255 / (k - 1)))
-    i = ImageOps.equalize(i)
+    i.putdata(result)
+    i = ImageOps.autocontrast(i)
     new = pil_to_pygame_img(i)
     screen = pygame.display.get_surface()
     if not screen.get_width == dims[1]:
-      x=dims[0]
-      y=dims[1]
-      initScreen(x,y)
-    screen.blit(new,(0,0))
+      initScreen(dims[0],dims[1])
+    screen.blit(pil_to_pygame_img(i),(0,0))
     if pygame.font:
     	font = pygame.font.Font(None, 36)
     	ts = 'Rule ' + str(n)
@@ -82,7 +80,7 @@ def initScreen(x,y):
    pygame.mouse.set_visible(0)
    background = pygame.Surface(screen.get_size())
    background = background.convert()
-   background.fill((250, 250, 250))
+   background.fill((0, 0, 0))
    screen.blit(background, (0, 0))
    pygame.display.flip()
 
